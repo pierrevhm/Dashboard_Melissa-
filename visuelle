@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes automatisations · SELARL Mélissa Pujol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#f7f8fa; --white:#fff; --border:#e5e7eb; --border-lt:#f0f1f3;
+  --text:#111827; --muted:#6b7280; --hint:#9ca3af;
+  --green:#16a34a; --green-lt:#dcfce7; --green-mid:#86efac; --green-txt:#15803d;
+  --red:#dc2626; --red-lt:#fee2e2; --red-txt:#b91c1c;
+  --amber:#d97706; --amber-lt:#fef3c7; --amber-txt:#b45309;
+  --blue:#2563eb; --blue-lt:#dbeafe; --blue-txt:#1d4ed8;
+  --purple:#7c3aed; --purple-lt:#ede9fe; --purple-txt:#6d28d9;
+  --teal:#0d9488; --teal-lt:#ccfbf1; --teal-txt:#0f766e;
+  --r:12px; --r-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+body { background:var(--bg); font-family:var(--font); color:var(--text); font-size:14px; line-height:1.5; }
+
+/* TOPBAR */
+.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 32px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+.brand { display:flex; align-items:center; gap:12px; }
+.brand-logo { width:38px; height:38px; background:var(--green-lt); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; border:1px solid var(--green-mid); }
+.brand-name { font-size:15px; font-weight:700; letter-spacing:-.01em; }
+.brand-sub { font-size:12px; color:var(--muted); }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.live-pill { display:flex; align-items:center; gap:6px; background:var(--green-lt); color:var(--green-txt); border:1px solid var(--green-mid); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600; }
+.live-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+#countdown { font-size:12px; color:var(--hint); }
+
+/* FILTER BAR */
+.filter-bar { background:var(--white); border-bottom:1px solid var(--border); padding:12px 32px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.filter-label { font-size:12px; font-weight:600; color:var(--muted); margin-right:4px; }
+.preset-btns { display:flex; gap:6px; flex-wrap:wrap; }
+.preset-btn { font-size:12px; font-weight:500; padding:5px 12px; border-radius:20px; border:1px solid var(--border); background:var(--white); color:var(--muted); cursor:pointer; transition:all .15s; white-space:nowrap; }
+.preset-btn:hover { border-color:var(--purple); color:var(--purple-txt); }
+.preset-btn.active { background:var(--purple-lt); border-color:var(--purple); color:var(--purple-txt); font-weight:600; }
+.filter-sep { width:1px; height:24px; background:var(--border); margin:0 4px; }
+.date-inputs { display:flex; align-items:center; gap:8px; }
+.date-input { font-family:var(--font); font-size:12px; padding:5px 10px; border:1px solid var(--border); border-radius:8px; color:var(--text); background:var(--white); cursor:pointer; outline:none; }
+.date-input:focus { border-color:var(--purple); }
+.date-sep { font-size:12px; color:var(--hint); }
+.apply-btn { font-family:var(--font); font-size:12px; font-weight:600; padding:5px 14px; border-radius:8px; background:var(--purple); color:#fff; border:none; cursor:pointer; }
+.apply-btn:hover { background:var(--purple-txt); }
+.period-label { font-size:11px; color:var(--hint); margin-left:6px; }
+
+/* PAGE */
+.page { max-width:1080px; margin:0 auto; padding:24px 24px 48px; }
+.slabel { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--hint); margin-bottom:10px; }
+
+/* KPIs */
+.kpi-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.kpi { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px 20px 16px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+.kpi::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:var(--r-lg) var(--r-lg) 0 0; }
+.kpi.k-purple::after{background:var(--purple)} .kpi.k-teal::after{background:var(--teal)} .kpi.k-green::after{background:var(--green)} .kpi.k-red::after{background:var(--red)}
+.kpi-emoji { font-size:22px; margin-bottom:14px; }
+.kpi-num { font-size:34px; font-weight:700; letter-spacing:-.03em; line-height:1; margin-bottom:5px; }
+.k-purple .kpi-num{color:var(--purple)} .k-teal .kpi-num{color:var(--teal)} .k-green .kpi-num{color:var(--green)} .k-red .kpi-num{color:var(--red)}
+.kpi-name { font-size:13px; font-weight:600; margin-bottom:3px; }
+.kpi-sub { font-size:12px; color:var(--muted); }
+
+/* WF CARDS */
+.wf-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.wf-block { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); overflow:hidden; }
+.wf-top { display:flex; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid var(--border-lt); }
+.wf-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.wf-icon.purple{background:var(--purple-lt)} .wf-icon.teal{background:var(--teal-lt)}
+.wf-meta { flex:1; min-width:0; }
+.wf-name { font-size:13px; font-weight:600; }
+.wf-desc { font-size:11px; color:var(--muted); margin-top:1px; }
+.badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; flex-shrink:0; white-space:nowrap; }
+.badge-on  { background:var(--green-lt);  color:var(--green-txt); border:1px solid var(--green-mid); }
+.badge-off { background:#f3f4f6; color:var(--muted); border:1px solid var(--border); }
+.wf-nums { display:grid; grid-template-columns:repeat(4,1fr); }
+.wf-num { padding:14px 10px; text-align:center; border-right:1px solid var(--border-lt); }
+.wf-num:last-child { border-right:none; }
+.wf-val { font-size:20px; font-weight:700; color:var(--text); line-height:1; }
+.wf-val.green{color:var(--green)} .wf-val.red{color:var(--red)} .wf-val.blue{color:var(--blue)} .wf-val.purple{color:var(--purple)} .wf-val.teal{color:var(--teal)}
+.wf-lbl { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-top:4px; }
+
+/* BOTTOM */
+.bottom-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.card { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); overflow:hidden; }
+.card-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border-lt); }
+.card-title { font-size:14px; font-weight:600; }
+.card-hint { font-size:11px; color:var(--hint); }
+.card-body { padding:18px; }
+
+/* CHART */
+.bar-chart { display:flex; align-items:flex-end; gap:3px; height:110px; overflow:hidden; }
+.bar-col { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; gap:4px; }
+.bar-col:hover .bar-fill { filter:brightness(.9); }
+.bar-fill { width:100%; border-radius:3px 3px 0 0; min-height:2px; transition:height .4s cubic-bezier(.4,0,.2,1); }
+.bar-fill.ok{background:var(--green);opacity:.9} .bar-fill.err{background:var(--red);opacity:.85}
+.bar-n { font-size:9px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.bar-lbl { font-size:9px; color:var(--hint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:center; }
+.chart-footer { display:flex; gap:14px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border-lt); }
+.leg { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); font-weight:500; }
+.leg-dot { width:9px; height:9px; border-radius:3px; }
+
+/* EXECUTIONS */
+.exec-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-lt); }
+.exec-item:last-child { border-bottom:none; }
+.exec-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.exec-dot.success{background:var(--green)} .exec-dot.error,.exec-dot.crashed{background:var(--red)} .exec-dot.running{background:var(--blue)} .exec-dot.waiting{background:var(--amber)}
+.exec-wf { flex:1; font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.exec-badge { font-size:11px; font-weight:600; padding:2px 9px; border-radius:6px; flex-shrink:0; }
+.exec-badge.success{background:var(--green-lt);color:var(--green-txt)} .exec-badge.error,.exec-badge.crashed{background:var(--red-lt);color:var(--red-txt)} .exec-badge.running{background:var(--blue-lt);color:var(--blue-txt)} .exec-badge.waiting{background:var(--amber-lt);color:var(--amber-txt)}
+.exec-time { font-size:11px; color:var(--hint); flex-shrink:0; white-space:nowrap; }
+
+/* MISC */
+.loader { display:flex; align-items:center; justify-content:center; gap:10px; padding:28px; color:var(--hint); font-size:13px; }
+.spinner { width:16px; height:16px; border:2px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.err-bar { background:var(--red-lt); border:1px solid #fca5a5; border-radius:8px; padding:11px 16px; color:var(--red-txt); font-size:13px; font-weight:500; margin-bottom:18px; display:none; }
+.footer { max-width:1080px; margin:0 auto; padding:0 24px 32px; border-top:1px solid var(--border); padding-top:18px; display:flex; justify-content:space-between; font-size:11px; color:var(--hint); }
+
+/* RESPONSIVE */
+@media(max-width:720px){
+  .topbar,.filter-bar{padding:0 16px} .page{padding:16px 16px 40px}
+  .kpi-strip{grid-template-columns:1fr 1fr} .wf-grid,.bottom-row{grid-template-columns:1fr}
+  .wf-nums{grid-template-columns:1fr 1fr}
+  .wf-num:nth-child(2){border-right:none} .wf-num:nth-child(3),.wf-num:nth-child(4){border-top:1px solid var(--border-lt)}
+  .filter-bar{height:auto;padding:10px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">⚡</div>
+    <div>
+      <div class="brand-name">Mes automatisations</div>
+      <div class="brand-sub">SELARL Mélissa Pujol</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="live-pill"><div class="live-dot"></div>En direct</div>
+    <span id="countdown">30s</span>
+  </div>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Période :</span>
+  <div class="preset-btns">
+    <button class="preset-btn" data-preset="today">Aujourd'hui</button>
+    <button class="preset-btn active" data-preset="week">Cette semaine</button>
+    <button class="preset-btn" data-preset="month">Ce mois-ci</button>
+    <button class="preset-btn" data-preset="quarter">Ce trimestre</button>
+    <button class="preset-btn" data-preset="year">Cette année</button>
+    <button class="preset-btn" data-preset="all">Tout</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="date-inputs">
+    <input type="date" id="date-from" class="date-input">
+    <span class="date-sep">→</span>
+    <input type="date" id="date-to" class="date-input">
+    <button class="apply-btn" onclick="applyCustomDates()">Appliquer</button>
+  </div>
+  <span class="period-label" id="period-label"></span>
+</div>
+
+<main class="page">
+  <div class="err-bar" id="err-bar">⚠ Données inaccessibles. Vérifiez la connexion.</div>
+
+  <div class="slabel">Vue d'ensemble</div>
+  <div class="kpi-strip">
+    <div class="kpi k-purple"><div class="kpi-emoji">📂</div><div class="kpi-num" id="g-fiches">—</div><div class="kpi-name">Fiches traitées</div><div class="kpi-sub" id="g-fiches-sub"> </div></div>
+    <div class="kpi k-teal"><div class="kpi-emoji">📧</div><div class="kpi-num" id="g-mails">—</div><div class="kpi-name">Mails de rappel</div><div class="kpi-sub" id="g-mails-sub"> </div></div>
+    <div class="kpi k-green"><div class="kpi-emoji">✅</div><div class="kpi-num" id="g-success">—</div><div class="kpi-name">Exécutions réussies</div><div class="kpi-sub" id="g-rate">—</div></div>
+    <div class="kpi k-red"><div class="kpi-emoji">⚠️</div><div class="kpi-num" id="g-error">—</div><div class="kpi-name">Erreurs détectées</div><div class="kpi-sub">à vérifier dans n8n</div></div>
+  </div>
+
+  <div class="slabel">Détail des automatisations</div>
+  <div class="wf-grid">
+    <div class="wf-block">
+      <div class="wf-top">
+        <div class="wf-icon purple">📄</div>
+        <div class="wf-meta"><div class="wf-name">Fiche → Pipedrive</div><div class="wf-desc">Reçoit les fiches par mail et crée les contacts</div></div>
+        <span class="badge badge-on" id="wf1-badge">Actif</span>
+      </div>
+      <div class="wf-nums">
+        <div class="wf-num"><div class="wf-val purple" id="w1-fiches">—</div><div class="wf-lbl">Fiches</div></div>
+        <div class="wf-num"><div class="wf-val green" id="w1-success">—</div><div class="wf-lbl">Réussies</div></div>
+        <div class="wf-num"><div class="wf-val red" id="w1-error">—</div><div class="wf-lbl">Erreurs</div></div>
+        <div class="wf-num"><div class="wf-val blue" id="w1-running">—</div><div class="wf-lbl">En cours</div></div>
+      </div>
+    </div>
+    <div class="wf-block">
+      <div class="wf-top">
+        <div class="wf-icon teal">📧</div>
+        <div class="wf-meta"><div class="wf-name">Mail rappel RDV</div><div class="wf-desc">Envoie chaque matin un rappel aux clients</div></div>
+        <span class="badge badge-on" id="wf2-badge">Actif</span>
+      </div>
+      <div class="wf-nums">
+        <div class="wf-num"><div class="wf-val teal" id="w2-mails">—</div><div class="wf-lbl">Mails envoyés</div></div>
+        <div class="wf-num"><div class="wf-val green" id="w2-success">—</div><div class="wf-lbl">Réussies</div></div>
+        <div class="wf-num"><div class="wf-val red" id="w2-error">—</div><div class="wf-lbl">Erreurs</div></div>
+        <div class="wf-num"><div class="wf-val blue" id="w2-running">—</div><div class="wf-lbl">En cours</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="card">
+      <div class="card-head"><span class="card-title">Activité sur la période</span><span class="card-hint" id="chart-hint">fiches par jour</span></div>
+      <div class="card-body">
+        <div class="bar-chart" id="bar-chart"><div class="loader"><div class="spinner"></div>Chargement...</div></div>
+        <div class="chart-footer">
+          <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Réussies</div>
+          <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Erreurs</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">Dernières exécutions</span><span class="card-hint">sur la période</span></div>
+      <div class="card-body" id="exec-list"><div class="loader"><div class="spinner"></div>Chargement...</div></div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>SELARL Mélissa Pujol · Dashboard automatisations</span>
+  <span id="last-update">—</span>
+</footer>
+
+<script>
+const WEBHOOK = 'https://n8n.srv959772.hstgr.cloud/webhook/mel-stats';
+const INTERVAL = 30;
+const STATUS = { success:'Réussie', error:'Erreur', crashed:'Crash', running:'En cours', waiting:'Attente' };
+
+// ── État courant ──────────────────────────────────────────────
+let currentFrom = null;
+let currentTo   = null;
+
+// ── Helpers ───────────────────────────────────────────────────
+const fmt  = n => n == null ? '—' : Number(n).toLocaleString('fr-FR');
+const pct  = (a,b) => b ? Math.round(a/b*100)+' %' : '—';
+const set  = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+const isoToday = () => new Date().toISOString().split('T')[0];
+
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const s = (Date.now()-new Date(iso))/1000;
+  if (s<60)   return 'il y a '+Math.round(s)+'s';
+  if (s<3600) return 'il y a '+Math.round(s/60)+' min';
+  if (s<86400)return 'il y a '+Math.round(s/3600)+' h';
+  return 'il y a '+Math.round(s/86400)+' j';
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return d+'/'+m+'/'+y;
+}
+
+// ── Presets ───────────────────────────────────────────────────
+function getPresetDates(preset) {
+  const now = new Date();
+  const y=now.getFullYear(), mo=now.getMonth(), d=now.getDate();
+  let from, to = isoToday();
+  switch(preset) {
+    case 'today':
+      from = to; break;
+    case 'week': {
+      const day = now.getDay() || 7;
+      const mon = new Date(y, mo, d - day + 1);
+      from = mon.toISOString().split('T')[0]; break;
+    }
+    case 'month':
+      from = `${y}-${String(mo+1).padStart(2,'0')}-01`; break;
+    case 'quarter': {
+      const q = Math.floor(mo/3);
+      from = `${y}-${String(q*3+1).padStart(2,'0')}-01`; break;
+    }
+    case 'year':
+      from = `${y}-01-01`; break;
+    case 'all':
+      from = null; to = null; break;
+  }
+  return { from, to };
+}
+
+function applyPreset(preset) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.toggle('active', b.dataset.preset===preset));
+  const {from,to} = getPresetDates(preset);
+  currentFrom = from; currentTo = to;
+  document.getElementById('date-from').value = from || '';
+  document.getElementById('date-to').value   = to   || '';
+  updatePeriodLabel(from, to);
+  fetchStats();
+}
+
+function applyCustomDates() {
+  const from = document.getElementById('date-from').value || null;
+  const to   = document.getElementById('date-to').value   || null;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  currentFrom = from; currentTo = to;
+  updatePeriodLabel(from, to);
+  fetchStats();
+}
+
+function updatePeriodLabel(from, to) {
+  const el = document.getElementById('period-label');
+  if (!from && !to) { el.textContent = 'Toutes les données'; return; }
+  if (from && to) { el.textContent = formatDate(from)+' → '+formatDate(to); return; }
+  if (from) { el.textContent = 'Depuis le '+formatDate(from); return; }
+  el.textContent = "Jusqu'au "+formatDate(to);
+}
+
+// ── Render ────────────────────────────────────────────────────
+function render(d) {
+  set('g-fiches',    fmt(d.fiches.total));
+  set('g-fiches-sub', d.filters.from ? 'sur la période' : 'depuis le début');
+  set('g-mails',     fmt(d.mailsRappel.total));
+  set('g-mails-sub', d.filters.from ? 'sur la période' : 'depuis le début');
+  set('g-success',   fmt(d.global.totalSuccess));
+  set('g-rate',      pct(d.global.totalSuccess, d.global.totalExecutions)+' de succès');
+  set('g-error',     fmt(d.global.totalError));
+
+  set('w1-fiches',  fmt(d.fiches.total));
+  set('w1-success', fmt(d.wf1.success));
+  set('w1-error',   fmt(d.wf1.error));
+  set('w1-running', fmt(d.wf1.running));
+
+  set('w2-mails',   fmt(d.mailsRappel.total));
+  set('w2-success', fmt(d.wf2.success));
+  set('w2-error',   fmt(d.wf2.error));
+  set('w2-running', fmt(d.wf2.running));
+
+  const b1=document.getElementById('wf1-badge');
+  if(b1){b1.textContent=d.wf1.active?'Actif':'Inactif';b1.className='badge '+(d.wf1.active?'badge-on':'badge-off');}
+  const b2=document.getElementById('wf2-badge');
+  if(b2){b2.textContent=d.wf2.active?'Actif':'Inactif';b2.className='badge '+(d.wf2.active?'badge-on':'badge-off');}
+
+  // Chart
+  const chartEl=document.getElementById('bar-chart');
+  if (d.days && d.days.length) {
+    const maxOk=Math.max(...d.days.map(x=>x.fichesTraitees+x.error),1);
+    const showLabels = d.days.length <= 31;
+    set('chart-hint', d.days.length+' jours');
+    chartEl.innerHTML = d.days.map(day=>{
+      const total=day.fichesTraitees+day.error;
+      const okH =Math.round((day.fichesTraitees/maxOk)*96);
+      const errH=Math.round((day.error/maxOk)*96);
+      return `<div class="bar-col" title="${day.label} : ${day.fichesTraitees} fiche(s), ${day.error} erreur(s)">
+        <span class="bar-n">${total||''}</span>
+        ${errH>0?`<div class="bar-fill err" style="height:${errH}px"></div>`:''}
+        ${okH >0?`<div class="bar-fill ok"  style="height:${okH}px"></div>`:''}
+        <span class="bar-lbl">${showLabels?day.label:''}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Exécutions
+  const listEl=document.getElementById('exec-list');
+  if(d.recent&&d.recent.length){
+    listEl.innerHTML=d.recent.slice(0,8).map(r=>{
+      const cls=r.status||'running';
+      return `<div class="exec-item">
+        <div class="exec-dot ${cls}"></div>
+        <div class="exec-wf">${r.workflow}</div>
+        <span class="exec-badge ${cls}">${STATUS[cls]||cls}</span>
+        <span class="exec-time">${timeAgo(r.startedAt)}</span>
+      </div>`;
+    }).join('');
+  } else {
+    listEl.innerHTML='<div class="loader" style="padding:20px">Aucune exécution sur cette période</div>';
+  }
+
+  const now=new Date();
+  set('last-update','Mis à jour à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+  document.getElementById('err-bar').style.display='none';
+}
+
+// ── Fetch ─────────────────────────────────────────────────────
+async function fetchStats() {
+  let url = WEBHOOK;
+  const params = [];
+  if (currentFrom) params.push('from='+currentFrom);
+  if (currentTo)   params.push('to='+currentTo);
+  if (params.length) url += '?' + params.join('&');
+  try {
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    render(await res.json());
+  } catch(e) {
+    console.error(e);
+    document.getElementById('err-bar').style.display='block';
+  }
+  cd=INTERVAL;
+}
+
+// ── Countdown ─────────────────────────────────────────────────
+let cd=INTERVAL;
+setInterval(()=>{
+  cd=Math.max(0,cd-1);
+  set('countdown',cd>0?`${cd}s`:'...');
+  if(cd===0) cd=INTERVAL;
+},1000);
+
+// ── Init ──────────────────────────────────────────────────────
+document.querySelectorAll('.preset-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>applyPreset(btn.dataset.preset));
+});
+
+// Preset par défaut : cette semaine
+applyPreset('week');
+setInterval(fetchStats, INTERVAL*1000);
+</script>
+</body>
+</html>
